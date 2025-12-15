@@ -1,6 +1,12 @@
 ## Overview
 
 性能評価の実験で使用する、客役とAIの会話データを収集・提供するためのAPIサーバー。
+Railway上で、FastAPIを用いて構築している。
+
+
+## Access
+
+- Base URL: [pbl-collect-data.mtaisei.com](pbl-collect-data.mtaisei.com)
 
 
 ## Run
@@ -14,4 +20,4 @@
 
 ## Json URL
 
-`URL`: `/conversations?token={token}`
+`URL`: `https://pbl-collect-data.mtaisei.com/conversations?token={token}`
