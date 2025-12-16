@@ -8,9 +8,13 @@ from google.genai import types
 from dotenv import load_dotenv
 from fastapi.templating import Jinja2Templates
 from fastapi.responses import HTMLResponse
+from fastapi import BackgroundTasks
 import sqlite3
 import json
 import os
+
+
+from write_sheet import save_row_to_sheet
 
 
 load_dotenv()
@@ -190,7 +194,7 @@ async def get_conversations(token: str = Query(...)):
 
 
 @app.post("/chat")
-def chat(req: ChatRequest):
+def chat(req: ChatRequest, background_tasks: BackgroundTasks):
     name = req.name
     message = req.message
 
@@ -212,6 +216,12 @@ def chat(req: ChatRequest):
 
     if "END_OF_CONVERSATION" in response or session["turn_count"] >= TURN_LIMIT:
         save_conversation(name, session["user_utterances"], session["ai_utterances"])
+        background_tasks.add_task(
+            save_row_to_sheet,
+            name,
+            session["user_utterances"],
+            session["ai_utterances"],
+        )
         del sessions[name]
 
         print(" Conversation saved and session ended.")
